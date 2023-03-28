@@ -17,7 +17,7 @@ def sign_challenge(challenge, private_key):
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
-    print("Connected to server.")
+    print("Connected to slave robot.")
 
     # Receive the challenge from the server
     challenge = s.recv(1024).decode()
