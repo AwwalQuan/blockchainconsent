@@ -15,4 +15,4 @@
 1. Open another terminal and run the master console `$ python3 master_console.py`. Enter the surgeon's private key to authenticate the surgeon.
 
 The following sequence diagram shows the authentication steps
-![Sequence diagram](https://user-images.githubusercontent.com/48957591/228213352-954979d9-ad1e-4a07-b363-cafe49e45e3e.png)
+![Sequence diagram](https://user-images.githubusercontent.com/48957591/228214325-56e7d985-4eee-46ff-8635-e9749018630a.png)
