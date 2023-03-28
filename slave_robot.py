@@ -91,7 +91,7 @@ def open_socket():
         while True:
             conn, addr = s.accept()
             with conn:
-                print('Client connected:', addr)
+                print('Master console connected:', addr)
                 # Authenticate the surgeon with public address
                 authenticate_surgeon(conn, surgeon_address)
 
