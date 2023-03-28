@@ -1,9 +1,9 @@
 # blockchainconsent
-![demo](https://user-images.githubusercontent.com/48957591/228177325-07306568-cc3a-4c0a-b8c4-3d93b7d3ac2a.gif)
 
 ## Requirements
 - A local Ganache block chain.
 - At least two accounts on the blockchain. One for the patient, and the second for the surgeon.
+![demo](https://user-images.githubusercontent.com/48957591/228178655-4e9f086c-ec85-454c-ab1b-53c8c9b87b0c.gif)
 
 ## Steps to simulate
 1. Clone the repository `$ git clone https://github.com/AwwalQuan/blockchainconsent.git`
