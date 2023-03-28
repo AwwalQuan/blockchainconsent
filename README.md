@@ -12,3 +12,6 @@
    - In the `smartcontract/consent/` directory, run `$ truffle deploy` to deploy the contract
 1. Run the slave robot `$ python3 slave_robot.py`. Enter the address and private key of the patient that created the contract.
 1. Open another terminal and run the master console `$ python3 master_console.py`. Enter the surgeon's private key to authenticate the surgeon.
+
+The following sequence diagram shows the authentication steps
+![Sequence diagram](https://user-images.githubusercontent.com/48957591/228162701-35ec57ea-6284-447e-9cce-e0057927eee0.png)
