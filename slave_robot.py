@@ -5,7 +5,6 @@ import datetime
 import json
 import socket
 import uuid
-import colorama
 from colorama import Fore
 
 # Connect to Ganache
@@ -15,19 +14,16 @@ web3 = Web3(Web3.HTTPProvider(ganache_url))
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 
-# Replace with your address
-user_address = "0x52CfF12eae83154d665011E493B144265E0385BE"
-private_key = "0x15f75d6216ae540382e63bd64cb4844f4d552783a7e3af255fada68dacb7361b"
-user_contracts = []
-surgeon_identity = ""
+patient_contracts = []
+surgeon_address = ""
 remote_control = False # Variable to verify of remote control has been granted to master console or not
 
 #The ABI is saved in a file named abi.json
 with open('abi.json', 'r') as f:
     abi = json.load(f)
 
-def get_all_user_contracts():
-    user_contracts.clear()
+def get_all_patient_contracts():
+    patient_contracts.clear()
     # Get all the blocks in the blockchain
     blockchain_length = web3.eth.block_number
     for i in range(blockchain_length + 1):
@@ -36,24 +32,24 @@ def get_all_user_contracts():
         for tx in transactions:
             tx_receipt = web3.eth.get_transaction_receipt(tx['hash'])
             if tx_receipt.contractAddress is not None:
-                if tx_receipt['from'] == user_address:
+                if tx_receipt['from'] == patient_address:
                     contract_address = tx_receipt.contractAddress
                     contract = web3.eth.contract(address=contract_address, abi=abi)
-                    print(f"Contract created by {user_address} at block number {i}:")
+                    print(f"Contract created by {patient_address} at block number {i}:")
                     print(datetime.datetime.fromtimestamp(block.timestamp)) #Timestamp block was created
                     print(contract.functions.getConsentDetails().call())
                     print("Contract address:", contract_address)
-                    user_contracts.append(contract_address) # Append contract address to the list
+                    patient_contracts.append(contract_address) # Append contract address to the list
                     print()
 
-def extract_surgeon_identity(contract_address):
+def extract_surgeon_address(contract_address):
     contract = web3.eth.contract(address=contract_address, abi=abi)
     # Print the contract details
     print("Selected Contract Address:", contract_address)
     contract_details = contract.functions.getConsentDetails().call()
-    surgeon_identity = contract_details[4]
+    surgeon_address = contract_details[4]
     print("Contract Details:", contract_details)
-    return surgeon_identity
+    return surgeon_address
 
 def sign_challenge(challenge, private_key):
     # Sign the challenge message with the private key
@@ -97,22 +93,26 @@ def open_socket():
             with conn:
                 print('Client connected:', addr)
                 # Authenticate the surgeon with public address
-                authenticate_surgeon(conn, surgeon_identity)
+                authenticate_surgeon(conn, surgeon_address)
 
 # Authenticate account
+print(Fore.YELLOW + '\033[1m' + 'Test address: 0x52CfF12eae83154d665011E493B144265E0385BE\nTest key: 0x15f75d6216ae540382e63bd64cb4844f4d552783a7e3af255fada68dacb7361b' + '\033[0m')
+print(Fore.GREEN + '\033[1m' + 'PATIENT AUTHENTICATION' + '\033[0m')
+patient_address = input('Enter the patient address: ')
+private_key = input('Enter the patient private key: ')
 account = web3.eth.account.from_key(private_key)
-if account.address.lower() == user_address.lower():
-    print("Authentication successful")
-    get_all_user_contracts()
+if account.address.lower() == patient_address.lower():
+    print(Fore.GREEN + '\033[1m' + 'Authentication successful' + '\033[0m')
+    get_all_patient_contracts()
     
     # Prompt user to select a contract
     contract_address = input(Fore.GREEN + '\033[1m' + 'Enter the address of the contract you wish to execute\n' + '\033[0m')
     
     # Verify that the authenticated user created the contract
     try:
-        if contract_address in user_contracts:
-            surgeon_identity = extract_surgeon_identity(contract_address)
-            print("Surgeon Identity: " + surgeon_identity)
+        if contract_address in patient_contracts:
+            surgeon_address = extract_surgeon_address(contract_address)
+            print("Surgeon Address: " + surgeon_address)
             # open socket to listen to connection from the master console
             # Authenticate the master console
             print("Waiting for the surgeon to connect and authenticate...")
